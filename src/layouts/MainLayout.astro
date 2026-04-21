@@ -1,0 +1,43 @@
+---
+import Header from '../components/Header.astro'
+import Hero from '../components/Hero.astro'
+import Footer from '../components/Footer.astro'
+import Zoomin from '../components/Zoomin.astro'
+import '../styles/global.css'
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="description"
+      content="Portfolio Galeri Fotografi dairewahandi -
+     Programmer & Photographer"
+    />
+    <link rel="canonical" href={Astro.url} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>dairewahandi gallery</title>
+  </head>
+  <body class="relative min-h-dvh w-dvw">
+    <Zoomin />
+    <Header />
+    <Hero />
+    <main class="relative mx-auto max-w-[70%]">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+</style>

@@ -1,17 +1,61 @@
 ---
+import MainLayout from '../layouts/MainLayout.astro'
 
+const allImage = [
+  'https://dummyimage.com/1000x1000/ff0000/fff',
+  'https://dummyimage.com/1000x1000/00ff00/fff',
+  'https://dummyimage.com/1000x1000/0000ff/fff',
+  'https://dummyimage.com/1000x1000/ffff00/000',
+  'https://dummyimage.com/1000x1000/ff00ff/fff',
+  'https://dummyimage.com/1000x1000/00ffff/000',
+  'https://dummyimage.com/1000x1000/ffa500/fff',
+  'https://dummyimage.com/1000x1000/800080/fff',
+  'https://dummyimage.com/1000x1000/008000/fff',
+  'https://dummyimage.com/1000x1000/808080/fff',
+  'https://dummyimage.com/1000x1000/a52a2a/fff',
+  'https://dummyimage.com/1000x1000/ffd700/000',
+]
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<MainLayout>
+  <div
+    class="grid grid-cols-1 py-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+  >
+    {
+      Array.from({ length: 12 }).map((_, i) => {
+        return (
+          <div id={`zoominImage-${i}`} class="zoominImage">
+            <img
+              src={allImage[i]}
+              alt="Image"
+              class="h-auto w-full object-cover"
+            />
+          </div>
+        )
+      })
+    }
+  </div>
+</MainLayout>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const zoominImage = document.querySelectorAll('.zoominImage')
+    const windowImage = document.getElementById('windowImage')
+
+    zoominImage.forEach((image) => {
+      image.addEventListener('click', () => {
+        windowImage?.classList.remove('hidden')
+        windowImage?.classList.add('fixed')
+        const img = windowImage?.querySelector('img')
+        const link = windowImage?.querySelector('a')
+        if (img) {
+          img.src = image.querySelector('img')?.src || ''
+        }
+        if (link) {
+          link.href = image.querySelector('img')?.src || ''
+        }
+        document.documentElement.style.overflow = 'hidden'
+      })
+    })
+  })
+</script>

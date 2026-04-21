@@ -12,6 +12,15 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^6.1.8"
+    "@iconify-json/proicons": "^1.2.19",
+    "@lucide/astro": "^1.8.0",
+    "@tailwindcss/typography": "tailwindcss/typography",
+    "@tailwindcss/vite": "^4.2.2",
+    "astro": "^6.1.8",
+    "astro-icon": "^1.1.5",
+    "prettier": "^3.8.3",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "tailwindcss": "^4.2.2"
   }
 }
