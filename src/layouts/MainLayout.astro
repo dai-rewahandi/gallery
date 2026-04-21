@@ -26,26 +26,66 @@ import '../styles/global.css'
     />
     <title>dairewahandi gallery</title>
   </head>
-  <body class="relative min-h-dvh w-dvw opacity-0">
-    <Zoomin />
-    <Header />
-    <Hero />
-    <main class="relative mx-auto max-w-[70%]">
-      <slot />
-    </main>
-    <Footer />
+  <body class="relative min-h-dvh w-dvw overflow-x-hidden">
+    <script is:inline>
+      document.body.style.overflow = 'hidden';
+    </script>
+    <div id="loading-screen" class="fixed inset-0 z-[9999] flex items-center justify-center bg-white transition-opacity duration-700">
+      <div class="flex flex-col items-center gap-4">
+        <div class="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-gray-800"></div>
+        <p class="text-sm font-medium text-gray-600 animate-pulse uppercase tracking-widest">Loading Gallery</p>
+      </div>
+    </div>
+
+    <div id="main-content" class="opacity-0 transition-opacity duration-1000">
+      <Zoomin />
+      <Header />
+      <Hero />
+      <main class="relative mx-auto max-w-[70%]">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+
+    <style>
+      body {
+        font-family: 'IBM Plex Sans', sans-serif;
+      }
+    </style>
+
+    <script is:inline>
+      async function validateImages() {
+        const loader = document.getElementById('loading-screen');
+        const content = document.getElementById('main-content');
+        const images = Array.from(document.querySelectorAll('img'));
+        
+        const loadImage = (img) => {
+          if (img.complete) {
+            return img.decode().catch(() => {});
+          }
+          return new Promise((resolve) => {
+            img.onload = () => img.decode().then(resolve).catch(resolve);
+            img.onerror = resolve;
+          });
+        };
+
+        await Promise.all(images.map(loadImage));
+
+        if (loader && content) {
+          loader.classList.add('opacity-0');
+          content.classList.remove('opacity-0');
+          document.body.style.overflow = 'auto';
+          
+          setTimeout(() => {
+            loader.style.display = 'none';
+          }, 700);
+        }
+      }
+
+      window.addEventListener('DOMContentLoaded', validateImages);
+      if (document.readyState === 'interactive' || document.readyState === 'complete') {
+        validateImages();
+      }
+    </script>
   </body>
 </html>
-
-<style>
-  body {
-    font-family: 'IBM Plex Sans', sans-serif;
-  }
-</style>
-
-
-<script is:inline>
-  window.addEventListener('DOMContentLoaded', () => {
-    document.body.classList.remove('opacity-0')
-  })
-</script>
