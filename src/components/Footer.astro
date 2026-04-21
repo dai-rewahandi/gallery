@@ -1,7 +1,23 @@
+---
+import { Icon } from 'astro-icon/components'
+---
+
+<div class="hero-footer flex flex-col items-center justify-center">
+  <p
+    class="mx-auto mt-20 mb-10 max-w-md text-center text-xs leading-relaxed text-neutral-500"
+  >
+    Arsip fotografi digital dengan karakteristik warna lembut. Saya memotret
+    objek sehari-hari dengan penekanan pada ketenangan visual. Ruang ini
+    digunakan sebagai dokumentasi eksplorasi teknis pribadi.
+  </p>
+  <span class="text-gray-400">thanks to</span>
+  <Icon name="simple-icons:nikon" class:list={'text-gray-400'} size={80} />
+</div>
+
 <footer
   class="mx-auto mb-10 flex w-[90%] justify-between text-xs text-gray-500"
 >
   <a href="/pnp" class="">Privacy Policy</a>
   <p class="">&copy; 2026 Gallery. All rights reserved.</p>
-  <p class="text-right text-sm">Made with Astro and Tailwind CSS.</p>
+  <!-- <p class="">Made with Astro and Tailwind CSS.</p> -->
 </footer>

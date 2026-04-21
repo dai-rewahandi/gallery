@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@iconify-json/proicons": "^1.2.19",
+    "@iconify-json/simple-icons": "^1.2.79",
     "@lucide/astro": "^1.8.0",
     "@tailwindcss/typography": "tailwindcss/typography",
     "@tailwindcss/vite": "^4.2.2",
