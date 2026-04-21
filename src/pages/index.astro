@@ -1,35 +1,33 @@
 ---
+import { Image } from 'astro:assets'
 import MainLayout from '../layouts/MainLayout.astro'
 
-const allImage = [
-  'https://dummyimage.com/1000x1000/ff0000/fff',
-  'https://dummyimage.com/1000x1000/00ff00/fff',
-  'https://dummyimage.com/1000x1000/0000ff/fff',
-  'https://dummyimage.com/1000x1000/ffff00/000',
-  'https://dummyimage.com/1000x1000/ff00ff/fff',
-  'https://dummyimage.com/1000x1000/00ffff/000',
-  'https://dummyimage.com/1000x1000/ffa500/fff',
-  'https://dummyimage.com/1000x1000/800080/fff',
-  'https://dummyimage.com/1000x1000/008000/fff',
-  'https://dummyimage.com/1000x1000/808080/fff',
-  'https://dummyimage.com/1000x1000/a52a2a/fff',
-  'https://dummyimage.com/1000x1000/ffd700/000',
-]
+const allImage = import.meta.glob('../assets/*.{jpg,png}', {
+  eager: true,
+  as: 'url',
+})
+
+const allImageArray = Object.values(allImage)
+const sortedImageArray = allImageArray.sort((a, b) => {
+  const aMatch = a.match(/(\d+)/)
+  const bMatch = b.match(/(\d+)/)
+
+  if (aMatch && bMatch) {
+    return parseInt(aMatch[0]) - parseInt(bMatch[0])
+  }
+  return 0
+})
 ---
 
 <MainLayout>
   <div
-    class="grid grid-cols-1 py-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+    class="grid grid-cols-1 py-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
   >
     {
-      Array.from({ length: 12 }).map((_, i) => {
+      Array.from({ length: 21 }).map((_, i) => {
         return (
-          <div id={`zoominImage-${i}`} class="zoominImage">
-            <img
-              src={allImage[i]}
-              alt="Image"
-              class="h-auto w-full object-cover"
-            />
+          <div id={`zoominImage-${i}`} class="zoominImage overflow-hidden grayscale-100 hover:grayscale-0 active:grayscale-0 cursor-pointer">
+            <Image src={sortedImageArray[i]} width={1000} height={1000} alt="Image" class="h-auto w-full object-cover" quality={'high'} format={'avif'}/>
           </div>
         )
       })
@@ -59,3 +57,10 @@ const allImage = [
     })
   })
 </script>
+
+
+<style>
+  img {
+  background-color: #f0f0f0;
+  }
+</style>

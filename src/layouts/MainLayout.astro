@@ -26,7 +26,7 @@ import '../styles/global.css'
     />
     <title>dairewahandi gallery</title>
   </head>
-  <body class="relative min-h-dvh w-dvw">
+  <body class="relative min-h-dvh w-dvw opacity-0">
     <Zoomin />
     <Header />
     <Hero />
@@ -42,3 +42,10 @@ import '../styles/global.css'
     font-family: 'IBM Plex Sans', sans-serif;
   }
 </style>
+
+
+<script is:inline>
+  window.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.remove('opacity-0')
+  })
+</script>
