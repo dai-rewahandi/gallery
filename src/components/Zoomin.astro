@@ -6,13 +6,21 @@ import { Icon } from 'astro-icon/components'
   id="windowImage"
   class="absolute top-0 left-0 z-50 hidden h-dvh w-dvw flex-col items-center justify-center bg-black/50 text-2xl font-bold text-white backdrop-blur-md transition-opacity duration-300 backdrop:blur-md"
 >
-  <div class="flex h-full w-full flex-col items-center justify-center">
-    <img
-      src="https://thelawgivers.com/wp-content/uploads/2016/04/dummy-post-square-1.jpg"
-      alt="Image"
-      class="h-auto w-[70%] md:w-[50%] max-w-125 object-cover"
-    />
-    <div class="mt-4 flex items-center gap-4">
+  <div class="flex h-full w-full flex-col items-center justify-center relative">
+    <div class="relative group">
+      <img
+        src="https://thelawgivers.com/wp-content/uploads/2016/04/dummy-post-square-1.jpg"
+        alt="Image"
+        class="h-auto w-[90vw] md:w-auto max-h-[70vh] object-contain shadow-2xl"
+      />
+      
+      <div class="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <p id="exif-model" class="text-base font-bold uppercase tracking-wider"></p>
+        <p id="exif-details" class="text-xs font-light text-gray-300 mt-1"></p>
+      </div>
+    </div>
+
+    <div class="mt-6 flex items-center gap-6">
       <div class="cursor-pointer" id="closeWindow">
         <Icon name="proicons:cancel-square" size={30} />
       </div>

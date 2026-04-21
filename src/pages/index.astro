@@ -1,22 +1,61 @@
 ---
 import { Image } from 'astro:assets'
 import MainLayout from '../layouts/MainLayout.astro'
+import exifr from 'exifr'
+import path from 'node:path'
 
-const allImage = import.meta.glob('../assets/*.{jpg,png}', {
+const allImageFiles = import.meta.glob('../assets/*.{jpg,png}', {
   eager: true,
-  as: 'url',
 })
 
-const allImageArray = Object.values(allImage)
-const sortedImageArray = allImageArray.sort((a, b) => {
-  const aMatch = a.match(/(\d+)/)
-  const bMatch = b.match(/(\d+)/)
+const allImageArray = Object.values(allImageFiles)
+
+const sortedImageArray = allImageArray.sort((a: any, b: any) => {
+  const aMatch = a.default.src.match(/(\d+)/)
+  const bMatch = b.default.src.match(/(\d+)/)
 
   if (aMatch && bMatch) {
     return parseInt(aMatch[0]) - parseInt(bMatch[0])
   }
   return 0
 })
+
+async function getExifData(imageModule: any) {
+  const filePath = path.join(process.cwd(), 'src', imageModule.default.src.split('?')[0].replace('/@fs', ''))
+  
+  try {
+    const data = await exifr.parse(filePath, {
+      pick: ['Make', 'Model', 'ExposureTime', 'FNumber', 'ISO', 'FocalLength']
+    })
+    
+    if (!data) return null
+
+    let shutterSpeed = data.ExposureTime
+    if (data.ExposureTime < 1) {
+      shutterSpeed = `1/${Math.round(1 / data.ExposureTime)}`
+    }
+
+    return {
+      model: data.Model || 'Unknown Camera',
+      iso: data.ISO || '-',
+      aperture: data.FNumber ? `f/${data.FNumber}` : '-',
+      shutter: shutterSpeed || '-',
+      focal: data.FocalLength ? `${data.FocalLength}mm` : '-'
+    }
+  } catch (e) {
+    return null
+  }
+}
+
+const imagesWithExif = await Promise.all(
+  sortedImageArray.map(async (img: any) => {
+    const exif = await getExifData(img)
+    return {
+      src: img.default,
+      exif
+    }
+  })
+)
 ---
 
 <MainLayout>
@@ -24,12 +63,20 @@ const sortedImageArray = allImageArray.sort((a, b) => {
     class="grid grid-cols-1 py-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
   >
     {
-      Array.from({ length: 21 }).map((_, i) => {
+      imagesWithExif.map((item, i) => {
         const isPriority = i < 6;
         return (
-          <div id={`zoominImage-${i}`} class="zoominImage overflow-hidden cursor-pointer bg-gray-100">
+          <div 
+            id={`zoominImage-${i}`} 
+            class="zoominImage overflow-hidden cursor-pointer bg-gray-100"
+            data-model={item.exif?.model}
+            data-iso={item.exif?.iso}
+            data-aperture={item.exif?.aperture}
+            data-shutter={item.exif?.shutter}
+            data-focal={item.exif?.focal}
+          >
             <Image 
-              src={sortedImageArray[i]} 
+              src={item.src} 
               width={800} 
               height={800} 
               alt={`Gallery Image ${i}`} 
@@ -53,16 +100,34 @@ const sortedImageArray = allImageArray.sort((a, b) => {
 
     zoominImage.forEach((image) => {
       image.addEventListener('click', () => {
-        windowImage?.classList.remove('hidden')
-        windowImage?.classList.add('fixed')
-        const img = windowImage?.querySelector('img')
-        const link = windowImage?.querySelector('a')
+        if (!windowImage) return
+        
+        windowImage.classList.remove('hidden')
+        windowImage.classList.add('fixed')
+        
+        const img = windowImage.querySelector('img')
+        const link = windowImage.querySelector('a')
+        
+        // Elemen EXIF di modal
+        const modelEl = document.getElementById('exif-model')
+        const detailsEl = document.getElementById('exif-details')
+
         if (img) {
           img.src = image.querySelector('img')?.src || ''
         }
         if (link) {
           link.href = image.querySelector('img')?.src || ''
         }
+
+        const model = (image as HTMLElement).dataset.model
+        const iso = (image as HTMLElement).dataset.iso
+        const aperture = (image as HTMLElement).dataset.aperture
+        const shutter = (image as HTMLElement).dataset.shutter
+        const focal = (image as HTMLElement).dataset.focal
+
+        if (modelEl) modelEl.textContent = model || 'No Camera Info'
+        if (detailsEl) detailsEl.textContent = `${focal} • ${aperture} • ${shutter} • ISO ${iso}`
+
         document.documentElement.style.overflow = 'hidden'
       })
     })
