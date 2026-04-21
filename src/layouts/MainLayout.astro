@@ -57,7 +57,8 @@ import '../styles/global.css'
       async function validateImages() {
         const loader = document.getElementById('loading-screen');
         const content = document.getElementById('main-content');
-        const images = Array.from(document.querySelectorAll('img'));
+        
+        const priorityImages = Array.from(document.querySelectorAll('img[loading="eager"]'));
         
         const loadImage = (img) => {
           if (img.complete) {
@@ -69,7 +70,9 @@ import '../styles/global.css'
           });
         };
 
-        await Promise.all(images.map(loadImage));
+        if (priorityImages.length > 0) {
+          await Promise.all(priorityImages.map(loadImage));
+        }
 
         if (loader && content) {
           loader.classList.add('opacity-0');

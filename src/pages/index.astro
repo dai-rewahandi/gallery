@@ -25,9 +25,20 @@ const sortedImageArray = allImageArray.sort((a, b) => {
   >
     {
       Array.from({ length: 21 }).map((_, i) => {
+        const isPriority = i < 6;
         return (
-          <div id={`zoominImage-${i}`} class="zoominImage overflow-hidden grayscale-100 hover:grayscale-0 active:grayscale-0 cursor-pointer">
-            <Image src={sortedImageArray[i]} width={1000} height={1000} alt="Image" class="h-auto w-full object-cover" quality={'high'} format={'avif'} loading="eager" />
+          <div id={`zoominImage-${i}`} class="zoominImage overflow-hidden grayscale-100 hover:grayscale-0 active:grayscale-0 cursor-pointer bg-gray-100">
+            <Image 
+              src={sortedImageArray[i]} 
+              width={800} 
+              height={800} 
+              alt={`Gallery Image ${i}`} 
+              class="h-auto w-full object-cover" 
+              quality={80} 
+              format={'avif'} 
+              loading={isPriority ? "eager" : "lazy"}
+              decoding={isPriority ? "sync" : "async"}
+            />
           </div>
         )
       })
